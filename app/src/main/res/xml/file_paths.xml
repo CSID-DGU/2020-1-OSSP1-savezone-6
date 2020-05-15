@@ -3,7 +3,7 @@
 
     <external-path
         name="my_image"
-        path="Android/data/com.hyunapp.cameraexample/files/Pictures"/>
+        path="Android/data/com.teamsavezone.smartcart/files/Pictures"/>
 
 </paths>
 
