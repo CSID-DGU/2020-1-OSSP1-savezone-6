@@ -1,7 +1,5 @@
 package com.teamsavezone.smartcart;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -54,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         go_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cartIntent = new Intent(MainActivity.this, CartList.class);
-                startActivity(cartIntent);
+                Intent moveIntent = new Intent(MainActivity.this, CartList.class);
+                startActivity(moveIntent);
             }
         });
 
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null) {
+                if(intent.resolveActivity(getPackageManager()) != null){
                     File photoFile = null;
                     try {
                         photoFile = createImageFile();
@@ -72,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    if (photoFile != null) {
-                        photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile);
+                    if(photoFile != null) {
+                        photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile );
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
                     }
