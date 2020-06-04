@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.Realm;
@@ -17,6 +19,7 @@ public class CartList extends AppCompatActivity {
     private String table;
     private Realm realm;
     private TextView textView;
+    SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +28,15 @@ public class CartList extends AppCompatActivity {
         container = (LinearLayout) findViewById(R.id.cart_list);
         textView = (TextView) findViewById(R.id.text_cart);
 
+        //최초 실행시
+        if(!MyApplication.initExp){
+            //ExpList 테이블 생성
+            Toast.makeText(this, idFormat.format(new Date()), Toast.LENGTH_LONG).show();
+            //MyApplication.initExp = true;
+        }
+
         realm = Realm.getDefaultInstance();
-        createTable("양파");
+        //createTuple("양파");
     }
 
     public void onDestroy(){
@@ -34,15 +44,18 @@ public class CartList extends AppCompatActivity {
         realm.close();
     }
 
-
-    public void createTable(final String name){
+    //tuple 생성
+    public void createTuple(final String name){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 UserList userList = realm.createObject(UserList.class);
+                //촬영 시점
+                userList.setCurrent(new Date());
+                //id를 현재 날짜로 하고싶은데 왜 오류가 날까 엉엉
                 userList.setId(0);
                 userList.setName(name);
-                userList.setCurrent(new Date());
+
                 userList.setStorage(1);
                 userList.setExpire(new Date());
                 showResult();
