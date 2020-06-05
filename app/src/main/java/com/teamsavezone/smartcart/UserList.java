@@ -1,20 +1,21 @@
 package com.teamsavezone.smartcart;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class UserList extends RealmObject {
 
-    //Primary key
+    //id(촬영 날짜의 concat으로 설정)
     int id;
     //식품명
     String name;
     //구매 일자
     Date current;
     //보관 방법
-    int storage;
+    String storage;
     //유통기한 만료일 (current + ExpList.expire)
     Date expire;
 
@@ -42,11 +43,11 @@ public class UserList extends RealmObject {
         this.current = current;
     }
 
-    public int getStorage(){
+    public String getStorage(){
         return storage;
     }
 
-    public void setStorage(int storage){
+    public void setStorage(String storage){
         this.storage = storage;
     }
 
@@ -60,10 +61,12 @@ public class UserList extends RealmObject {
 
     @Override
     public String toString() {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return "품목명 : " + name +
-                ", 구매 일자 : " + current +
+                ", 구매 일자 : " + dateFormat.format(current) +
                 ", 보관 방법 : " + storage +
-                ", 유통 기한 : " + expire +
+                ", 유통 기한 : " + dateFormat.format(expire) +
                 "\n";
     }
 }

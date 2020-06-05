@@ -6,11 +6,13 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class ExpList extends RealmObject {
+
+    //이름
     String name;
     //보관 방법 (0:상온 1:냉장 2:냉동)
     int storage;
     //유통 기한
-    Date expire;
+    int expire;
 
     public String getName(){
         return name;
@@ -28,11 +30,7 @@ public class ExpList extends RealmObject {
         this.storage = storage;
     }
 
-    public Date getExpire(){
-        return expire;
-    }
+    public int getExpire() { return expire; }
 
-    public void setExpire(Date expire){
-        this.expire = expire;
-    }
+    public void setExpire(int expire) { this.expire = expire; }
 }
