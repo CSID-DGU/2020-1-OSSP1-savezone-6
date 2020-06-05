@@ -79,7 +79,36 @@ public class CartList extends AppCompatActivity {
             public void execute(Realm realm) {
                 UserList userList = realm.createObject(UserList.class);
 
-                //need to modify
+                /*******current 설정*******/
+                userList.setCurrent(new Date());
+
+                /*******name 설정*******/
+                userList.setName(name);
+
+                /*******id 설정*******/
+                String id = idFormat.format(userList.getCurrent());
+                userList.setId(id);
+
+                //나머지 data는 expList table을 참고해서 설정함
+                ExpList expList = exp_realm.where(ExpList.class).equalTo("name", name).findAll().first();
+
+                /*******storage 설정*******/
+                if(expList.getStorage() == 0)
+                    userList.setStorage("상온");
+                else if(expList.getStorage() == 1)
+                    userList.setStorage("냉장");
+                else if(expList.getStorage() == 2)
+                    userList.setStorage("냉동");
+                else
+                    userList.setStorage("미정");
+
+                /*******expire 설정*******/
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(userList.getCurrent());
+                calendar.add(Calendar.DATE, expList.getExpire());
+                userList.setExpire(calendar.getTime());
+
+                showResult();
             }
         });
     }

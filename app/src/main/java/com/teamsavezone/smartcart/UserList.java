@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
 public class UserList extends RealmObject {
 
     //id(촬영 날짜의 concat으로 설정)
-    int id;
+    String id;
     //식품명
     String name;
     //구매 일자
@@ -19,11 +19,11 @@ public class UserList extends RealmObject {
     //유통기한 만료일 (current + ExpList.expire)
     Date expire;
 
-    public int getId(){
+    public String getId(){
         return id;
     }
 
-    public void setId(int id){
+    public void setId(String id){
         this.id = id;
     }
 
