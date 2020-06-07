@@ -1,8 +1,13 @@
 package com.teamsavezone.smartcart;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +35,6 @@ public class CartList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_list);
         container = (LinearLayout) findViewById(R.id.cart_list);
-        textView = (TextView) findViewById(R.id.text_cart);
         idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
         RealmConfiguration expConfig = new RealmConfiguration.Builder().build();
@@ -42,7 +46,7 @@ public class CartList extends AppCompatActivity {
             addFood("양파", 1, 4);
             addFood("사과", 1, 21);
             Toast.makeText(this, idFormat.format(new Date()), Toast.LENGTH_LONG).show();
-            //MyApplication.initExp = true;
+            MyApplication.initExp = true;
         }
 
         realm = Realm.getDefaultInstance();
@@ -115,7 +119,55 @@ public class CartList extends AppCompatActivity {
 
     private void showResult(){
         RealmResults<UserList> results = realm.where(UserList.class).findAll();
-        textView.setText(results.toString());
+        for(UserList data : results){
+            Button button = new Button(this);
+            button.setText(data.toString());
+            button.setBackgroundColor(Color.WHITE);
+            container.addView(button);
+            final String id = data.getId();
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //삭제하시겠습니까? 메세지
+                    //예 아니오 --> 예 클릭 시 해당 데이터베이스 삭제
+                    //화면 갱신 안되는 문제
+                    showMessage(id);
+                }
+            });
+        }
+    }
+
+    private void showMessage(final String id){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("품목 삭제");
+        builder.setMessage("삭제하시겠습니까?");
+
+        //예 클릭 시
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //해당 id를 갖는 tuple 삭제
+                final RealmResults<UserList> results = realm.where(UserList.class).equalTo("id", id).findAll();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        results.deleteFirstFromRealm();
+                    }
+                });
+            }
+        });
+
+        //아니오 클릭 시
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }
