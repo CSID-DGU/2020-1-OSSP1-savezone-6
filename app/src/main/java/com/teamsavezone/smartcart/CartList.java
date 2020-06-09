@@ -1,14 +1,17 @@
 package com.teamsavezone.smartcart;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ public class CartList extends AppCompatActivity {
     private Realm exp_realm;
     private TextView textView;
     SimpleDateFormat idFormat;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,12 +121,13 @@ public class CartList extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void showResult(){
         RealmResults<UserList> results = realm.where(UserList.class).findAll();
         for(UserList data : results){
-            Button button = new Button(this);
+            final Button button = new Button(this);
             button.setText(data.toString());
-            button.setBackgroundColor(Color.WHITE);
+            button.setBackground(getResources().getDrawable(R.drawable.list_btn_background));
             container.addView(button);
             final String id = data.getId();
 
@@ -131,14 +136,14 @@ public class CartList extends AppCompatActivity {
                 public void onClick(View v) {
                     //삭제하시겠습니까? 메세지
                     //예 아니오 --> 예 클릭 시 해당 데이터베이스 삭제
-                    //화면 갱신 안되는 문제
-                    showMessage(id);
+                    showMessage(id, button);
+                    container.invalidate();
                 }
             });
         }
     }
 
-    private void showMessage(final String id){
+    private void showMessage(final String id, final Button button){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("품목 삭제");
         builder.setMessage("삭제하시겠습니까?");
@@ -153,6 +158,7 @@ public class CartList extends AppCompatActivity {
                     @Override
                     public void execute(Realm realm) {
                         results.deleteFirstFromRealm();
+                        container.removeView(button);
                     }
                 });
             }
@@ -162,7 +168,6 @@ public class CartList extends AppCompatActivity {
         builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
             }
         });
 

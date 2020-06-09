@@ -16,16 +16,16 @@
         android:textSize="30sp" />
 
     <ScrollView
+        android:id="@+id/ListScroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FF5FB4EC">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/cart_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
     </ScrollView>
 
 </LinearLayout>
