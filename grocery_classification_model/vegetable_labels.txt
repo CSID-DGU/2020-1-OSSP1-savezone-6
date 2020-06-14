@@ -1,0 +1,7 @@
+apple
+banana
+cucumber
+milk
+onion
+radish
+strawberry
