@@ -49,7 +49,6 @@ public class CartList extends AppCompatActivity {
             //ExpList 테이블 생성
             addFood("양파", 1, 4);
             addFood("사과", 1, 21);
-            Toast.makeText(this, idFormat.format(new Date()), Toast.LENGTH_LONG).show();
             MyApplication.initExp = true;
         }
 
