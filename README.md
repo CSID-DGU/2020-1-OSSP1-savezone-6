@@ -20,8 +20,16 @@
 ### ✔ 개발 도구
 
 * **Android Studio**
+* **Tensorflow**
+* **Keras**
 * **Tensorflow lite**
 * **realm database**
+
+### ✔ Classification Model
+* **number of class : 7*
+* **input :  [1 224 224 3]*
+* **output : [1 7]*
+* **average accuracy : 90 +-3%**
 
 ### ✔ TEAM Info
 
