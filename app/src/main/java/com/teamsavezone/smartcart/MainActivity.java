@@ -1,11 +1,15 @@
 package com.teamsavezone.smartcart;
 
+import org.tensorflow.lite.Interpreter;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -21,19 +25,30 @@ import android.widget.Toast;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.soundcloud.android.crop.Crop;
 import com.teamsavezone.smartcart.R;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_IMAGE_CAPTURE = 672;
+    public static final int REQUEST_IMAGE = 100;
+
     private String imageFilePath;
-    private Uri photoUri;
+
+    // 카메라가 찍은 사진을 가지고 있을 변수
+    private Uri imageUri;
+
+    // 선택된 모델 관련
+    private String chosen;
+    private Boolean quant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,80 +76,55 @@ public class MainActivity extends AppCompatActivity {
         go_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if(intent.resolveActivity(getPackageManager()) != null){
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException e) {
-
-                    }
-
-                    if(photoFile != null) {
-                        photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile );
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-                    }
-                }
+                chosen = "vegetable.tflite";
+                quant = false;
+                // 카메라 열기!
+                openCameraIntent();
             }
         });
     }
 
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "TEST_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-        imageFilePath = image.getAbsolutePath();
-        return image;
+    private void openCameraIntent() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        // tell camera where to store the resulting picture
+        imageUri = getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        System.out.println(imageUri);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        // start camera, and wait for it to finish
+        startActivityForResult(intent, REQUEST_IMAGE);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
-            ExifInterface exif = null;
-
+        if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK) {
             try {
-                exif = new ExifInterface(imageFilePath);
-            } catch (IOException e) {
+                Uri source_uri = imageUri;
+                Uri dest_uri = Uri.fromFile(new File(getCacheDir(), "cropped"));
+                // need to crop it to square image as CNN's always required square input
+                Crop.of(source_uri, dest_uri).asSquare().start(MainActivity.this);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            int exifOrientation;
-            int exifDegree;
-
-            if (exif != null) {
-                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                exifDegree = exifOrientationToDegress(exifOrientation);
-            } else {
-                exifDegree = 0;
-            }
-
         }
-    }
-
-    private int exifOrientationToDegress(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            return 90;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            return 180;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            return 270;
+        // if cropping acitivty is finished, get the resulting cropped image uri and send it to 'Classify' activity
+        else if(requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+            imageUri = Crop.getOutput(data);
+            Intent i = new Intent(MainActivity.this, Classify.class);
+            // put image data in extras to send
+            i.putExtra("resID_uri", imageUri);
+            // put filename in extras
+            i.putExtra("chosen", chosen);
+            // put model type in extras
+            i.putExtra("quant", quant);
+            // send other required data
+            startActivity(i);
         }
-        return 0;
-    }
-
-    private Bitmap rotate(Bitmap bitmap, float degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     PermissionListener permissionListener = new PermissionListener() {
