@@ -1,54 +1,34 @@
 package com.teamsavezone.smartcart;
 
-import org.tensorflow.lite.Interpreter;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.soundcloud.android.crop.Crop;
-import com.teamsavezone.smartcart.R;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_IMAGE = 100;
 
-    private String imageFilePath;
-
     // 카메라가 찍은 사진을 가지고 있을 변수
     private Uri imageUri;
 
     // 선택된 모델 관련
-    private String chosen;
-    private Boolean quant;
+    private String model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
         go_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chosen = "vegetable.tflite";
-                quant = false;
+                model = "vegetable.tflite";
                 // 카메라 열기!
                 openCameraIntent();
             }
@@ -119,9 +98,8 @@ public class MainActivity extends AppCompatActivity {
             // put image data in extras to send
             i.putExtra("resID_uri", imageUri);
             // put filename in extras
-            i.putExtra("chosen", chosen);
+            i.putExtra("chosen", model);
             // put model type in extras
-            i.putExtra("quant", quant);
             // send other required data
             startActivity(i);
         }
