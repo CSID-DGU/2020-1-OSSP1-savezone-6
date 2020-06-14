@@ -62,8 +62,8 @@ public class Classify extends AppCompatActivity {
   private boolean quant;
 
   // input image dimensions for the Inception Model
-  private int DIM_IMG_SIZE_X = 299;
-  private int DIM_IMG_SIZE_Y = 299;
+  private int DIM_IMG_SIZE_X = 224;
+  private int DIM_IMG_SIZE_Y = 224;
   private int DIM_PIXEL_SIZE = 3;
 
   // int array to hold image data
