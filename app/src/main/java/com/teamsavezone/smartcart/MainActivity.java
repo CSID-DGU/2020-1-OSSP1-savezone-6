@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         //권한 허용 시 동작
         public void onPermissionGranted() {
-            Toast.makeText(getApplicationContext(), "카메라 권한이 허용되었습니다.",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "카메라 권한이 허용되었습니다.",Toast.LENGTH_SHORT).show();
         }
 
         @Override

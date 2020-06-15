@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -59,6 +60,7 @@ public class CartList extends AppCompatActivity {
             MyApplication.addCart = false;
         }
 
+        showResult();
     }
 
     public void onDestroy(){
@@ -67,6 +69,11 @@ public class CartList extends AppCompatActivity {
         realm.close();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        super.onBackPressed();
+    }
 
     public void addFood(final String name, final int storage, final int expire){
 
@@ -120,8 +127,6 @@ public class CartList extends AppCompatActivity {
                 calendar.setTime(userList.getCurrent());
                 calendar.add(Calendar.DATE, expList.getExpire());
                 userList.setExpire(calendar.getTime());
-
-                showResult();
             }
         });
     }
