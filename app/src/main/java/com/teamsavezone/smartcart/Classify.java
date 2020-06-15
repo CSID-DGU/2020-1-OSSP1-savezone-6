@@ -167,6 +167,19 @@ public class Classify extends AppCompatActivity {
       }
     });
 
+
+    //add food data to UserList table
+    add_btn = (Button) findViewById(R.id.add_btn);
+    add_btn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        MyApplication.addCart = true;
+        Intent move = new Intent(Classify.this, CartList.class);
+        startActivity(move);
+      }
+    });
+
+
     // get image from previous activity to show in the imageView
     Uri uri = (Uri)getIntent().getParcelableExtra("resID_uri");
     try {
@@ -250,20 +263,9 @@ public class Classify extends AppCompatActivity {
     Confidence3.setText(topConfidence[0]);
 
     //List에 담는 event
-    //MyApplication.name = topLables[2];
-    add_btn = (Button) findViewById(R.id.add_btn);
     add_btn.setVisibility(View.VISIBLE);
+    MyApplication.name = topLables[2];
 
-    //add food data to UserList table
-    /* Context 이용 방식 -> 작동 안함
-    add_btn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        String name = convertName(topLables[2]);
-        ((CartList)CartList.cart_context).createTuple(name);
-      }
-    });
-    */
   }
 
 
@@ -280,23 +282,4 @@ public class Classify extends AppCompatActivity {
     return resizedBitmap;
   }
 
-  public String convertName(String name){
-    String cName=null;
-    if(name=="apple")
-      cName="사과";
-    else if(name=="banana")
-      cName="바나나";
-    else if(name=="cucumber")
-      cName="오이";
-    else if(name=="milk")
-      cName="우유";
-    else if(name=="onion")
-      cName="양파";
-    else if(name=="radish")
-      cName="무";
-    else if(name=="strawberry")
-      cName="딸기";
-
-    return cName;
-  }
 }

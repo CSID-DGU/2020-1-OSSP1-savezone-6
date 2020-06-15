@@ -4,18 +4,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.net.sip.SipSession;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -24,20 +18,14 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class CartList extends AppCompatActivity {
 
     private LinearLayout container;
-    private String table;
     private Realm realm;
     private Realm exp_realm;
-    private TextView textView;
     SimpleDateFormat idFormat;
-
-    public static Context cart_context;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +33,6 @@ public class CartList extends AppCompatActivity {
         setContentView(R.layout.activity_cart_list);
         container = (LinearLayout) findViewById(R.id.cart_list);
         idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        cart_context=this;
 
         RealmConfiguration expConfig = new RealmConfiguration.Builder().build();
         exp_realm = Realm.getInstance(expConfig);
@@ -64,21 +51,14 @@ public class CartList extends AppCompatActivity {
         }
 
         realm = Realm.getDefaultInstance();
-        createTuple("양파");
 
-        /* Inflater 이용 방식 -> 작동 안함
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.activity_classify, null);
+        if(MyApplication.addCart){
+            String name = convertName(MyApplication.name);
+            Toast.makeText(this, name + "가 리스트에 담겼습니다.", Toast.LENGTH_SHORT).show();
+            createTuple(name);
+            MyApplication.addCart = false;
+        }
 
-        Button add_btn = (Button) view.findViewById(R.id.add_btn);
-        add_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = convertName(MyApplication.name);
-                createTuple(name);
-            }
-        });
-        */
     }
 
     public void onDestroy(){
@@ -86,6 +66,7 @@ public class CartList extends AppCompatActivity {
         exp_realm.close();
         realm.close();
     }
+
 
     public void addFood(final String name, final int storage, final int expire){
 
@@ -199,6 +180,25 @@ public class CartList extends AppCompatActivity {
         alertDialog.show();
     }
 
+    public String convertName(String name){
+        String cName=null;
 
+        if(name.equals("apple"))
+            cName="사과";
+        else if(name.equals("banana"))
+            cName="바나나";
+        else if(name.equals("cucumber"))
+            cName="오이";
+        else if(name.equals("milk"))
+            cName="우유";
+        else if(name.equals("onion"))
+            cName="양파";
+        else if(name.equals("radish"))
+            cName="무";
+        else if(name.equals("strawberry"))
+            cName="딸기";
+
+        return cName;
+    }
 
 }
