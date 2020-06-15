@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -70,6 +71,7 @@ public class Classify extends AppCompatActivity {
   private ImageView selected_image;
   private Button classify_button;
   private Button back_button;
+  private Button add_btn;
   private TextView label1;
   private TextView label2;
   private TextView label3;
@@ -161,6 +163,7 @@ public class Classify extends AppCompatActivity {
         tflite.run(imgData, labelProbArray);
         // display the results
         printTopKLabels();
+
       }
     });
 
@@ -245,6 +248,22 @@ public class Classify extends AppCompatActivity {
     Confidence1.setText(topConfidence[2]);
     Confidence2.setText(topConfidence[1]);
     Confidence3.setText(topConfidence[0]);
+
+    //List에 담는 event
+    //MyApplication.name = topLables[2];
+    add_btn = (Button) findViewById(R.id.add_btn);
+    add_btn.setVisibility(View.VISIBLE);
+
+    //add food data to UserList table
+    /* Context 이용 방식 -> 작동 안함
+    add_btn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String name = convertName(topLables[2]);
+        ((CartList)CartList.cart_context).createTuple(name);
+      }
+    });
+    */
   }
 
 
@@ -259,5 +278,25 @@ public class Classify extends AppCompatActivity {
     Bitmap resizedBitmap = Bitmap.createBitmap(
             bm, 0, 0, width, height, matrix, false);
     return resizedBitmap;
+  }
+
+  public String convertName(String name){
+    String cName=null;
+    if(name=="apple")
+      cName="사과";
+    else if(name=="banana")
+      cName="바나나";
+    else if(name=="cucumber")
+      cName="오이";
+    else if(name=="milk")
+      cName="우유";
+    else if(name=="onion")
+      cName="양파";
+    else if(name=="radish")
+      cName="무";
+    else if(name=="strawberry")
+      cName="딸기";
+
+    return cName;
   }
 }

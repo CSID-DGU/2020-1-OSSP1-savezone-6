@@ -4,10 +4,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.sip.SipSession;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -33,6 +36,8 @@ public class CartList extends AppCompatActivity {
     private TextView textView;
     SimpleDateFormat idFormat;
 
+    public static Context cart_context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,7 @@ public class CartList extends AppCompatActivity {
         setContentView(R.layout.activity_cart_list);
         container = (LinearLayout) findViewById(R.id.cart_list);
         idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        cart_context=this;
 
         RealmConfiguration expConfig = new RealmConfiguration.Builder().build();
         exp_realm = Realm.getInstance(expConfig);
@@ -47,13 +53,32 @@ public class CartList extends AppCompatActivity {
         //최초 실행시
         if(!MyApplication.initExp){
             //ExpList 테이블 생성
-            addFood("양파", 1, 4);
             addFood("사과", 1, 21);
+            addFood("바나나", 2, 21);
+            addFood("오이", 1, 7);
+            addFood("양파", 1, 4);
+            addFood("무", 1, 7);
+            addFood("딸기", 1, 3);
+
             MyApplication.initExp = true;
         }
 
         realm = Realm.getDefaultInstance();
         createTuple("양파");
+
+        /* Inflater 이용 방식 -> 작동 안함
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_classify, null);
+
+        Button add_btn = (Button) view.findViewById(R.id.add_btn);
+        add_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = convertName(MyApplication.name);
+                createTuple(name);
+            }
+        });
+        */
     }
 
     public void onDestroy(){
@@ -173,5 +198,7 @@ public class CartList extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
+
 
 }

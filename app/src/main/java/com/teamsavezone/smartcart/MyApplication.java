@@ -8,6 +8,7 @@ import io.realm.RealmConfiguration;
 public class MyApplication extends Application {
 
     public static Boolean initExp = false;
+    public static String name;
 
     @Override
     public void onCreate() {
