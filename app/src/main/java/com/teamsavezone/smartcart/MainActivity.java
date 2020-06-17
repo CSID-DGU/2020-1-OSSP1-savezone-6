@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra("chosen", model);
             // put model type in extras
             // send other required data
+            // no history
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(i);
         }
     }

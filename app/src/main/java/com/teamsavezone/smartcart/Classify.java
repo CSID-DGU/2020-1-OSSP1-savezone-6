@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -70,6 +71,7 @@ public class Classify extends AppCompatActivity {
   private ImageView selected_image;
   private Button classify_button;
   private Button back_button;
+  private Button add_btn;
   private TextView label1;
   private TextView label2;
   private TextView label3;
@@ -161,8 +163,22 @@ public class Classify extends AppCompatActivity {
         tflite.run(imgData, labelProbArray);
         // display the results
         printTopKLabels();
+
       }
     });
+
+
+    //add food data to UserList table
+    add_btn = (Button) findViewById(R.id.add_btn);
+    add_btn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        MyApplication.addCart = true;
+        Intent move = new Intent(Classify.this, CartList.class);
+        startActivity(move);
+      }
+    });
+
 
     // get image from previous activity to show in the imageView
     Uri uri = (Uri)getIntent().getParcelableExtra("resID_uri");
@@ -245,6 +261,11 @@ public class Classify extends AppCompatActivity {
     Confidence1.setText(topConfidence[2]);
     Confidence2.setText(topConfidence[1]);
     Confidence3.setText(topConfidence[0]);
+
+    //List에 담는 event
+    add_btn.setVisibility(View.VISIBLE);
+    MyApplication.name = topLables[2];
+
   }
 
 
@@ -260,4 +281,5 @@ public class Classify extends AppCompatActivity {
             bm, 0, 0, width, height, matrix, false);
     return resizedBitmap;
   }
+
 }

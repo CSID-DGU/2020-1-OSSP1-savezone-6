@@ -5,14 +5,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -21,18 +19,14 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class CartList extends AppCompatActivity {
 
     private LinearLayout container;
-    private String table;
     private Realm realm;
     private Realm exp_realm;
-    private TextView textView;
     SimpleDateFormat idFormat;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,19 +41,38 @@ public class CartList extends AppCompatActivity {
         //최초 실행시
         if(!MyApplication.initExp){
             //ExpList 테이블 생성
-            addFood("양파", 1, 4);
             addFood("사과", 1, 21);
+            addFood("바나나", 2, 21);
+            addFood("오이", 1, 7);
+            addFood("양파", 1, 4);
+            addFood("무", 1, 7);
+            addFood("딸기", 1, 3);
+
             MyApplication.initExp = true;
         }
 
         realm = Realm.getDefaultInstance();
-        createTuple("양파");
+
+        if(MyApplication.addCart){
+            String name = convertName(MyApplication.name);
+            Toast.makeText(this, name + "가 리스트에 담겼습니다.", Toast.LENGTH_SHORT).show();
+            createTuple(name);
+            MyApplication.addCart = false;
+        }
+
+        showResult();
     }
 
     public void onDestroy(){
         super.onDestroy();
         exp_realm.close();
         realm.close();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        super.onBackPressed();
     }
 
     public void addFood(final String name, final int storage, final int expire){
@@ -114,8 +127,6 @@ public class CartList extends AppCompatActivity {
                 calendar.setTime(userList.getCurrent());
                 calendar.add(Calendar.DATE, expList.getExpire());
                 userList.setExpire(calendar.getTime());
-
-                showResult();
             }
         });
     }
@@ -172,6 +183,27 @@ public class CartList extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public String convertName(String name){
+        String cName=null;
+
+        if(name.equals("apple"))
+            cName="사과";
+        else if(name.equals("banana"))
+            cName="바나나";
+        else if(name.equals("cucumber"))
+            cName="오이";
+        else if(name.equals("milk"))
+            cName="우유";
+        else if(name.equals("onion"))
+            cName="양파";
+        else if(name.equals("radish"))
+            cName="무";
+        else if(name.equals("strawberry"))
+            cName="딸기";
+
+        return cName;
     }
 
 }
