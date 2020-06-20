@@ -23,6 +23,7 @@
 * **Tensorflow**
 * **Keras**
 * **Tensorflow lite**
+* **Keras-retinanet**
 * **realm database**
 
 ### ✔ Classification Model
@@ -30,6 +31,9 @@
 * **input :  [1 224 224 3]*
 * **output : [1 7]*
 * **average accuracy : 90 +-3%**
+
+### Detection Model
+* 작성 예정.
 
 ### ✔ TEAM Info
 
