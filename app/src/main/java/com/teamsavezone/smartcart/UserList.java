@@ -64,9 +64,8 @@ public class UserList extends RealmObject {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return "품목명 : " + name +
-                ", 구매 일자 : " + dateFormat.format(current) +
-                ", 보관 방법 : " + storage +
-                ", 유통 기한 : " + dateFormat.format(expire) +
-                "\n";
+                "\n보관 방법 : " + storage +
+                "\n구매 일자 : " + dateFormat.format(current) +
+                "\n유통 기한 : " + dateFormat.format(expire);
     }
 }
