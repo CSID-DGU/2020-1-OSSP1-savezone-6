@@ -26,14 +26,20 @@
 * **Keras-retinanet**
 * **realm database**
 
-### ✔ Classification Model
+### ✔ Classification Model1
+* **물품 정보 인식
 * **number of class : 7*
 * **input :  [1 224 224 3]*
 * **output : [1 7]*
 * **average accuracy : 90 +-3%**
 
 ### Detection Model
-* 작성 예정.
+* **정확도가 낮아 실제 사용할 정도의 정확도가 나오지 않은 상황임 
+* **추가적인 데이터 학습을 진행해 모델의 정확도를 높여야 함.
+
+### Classification Model2
+* **Detection Model로 인식한 유통기한 정보로부터 유통기한 정보를 읽어오는 모델
+* **구현 예정
 
 ### ✔ TEAM Info
 
