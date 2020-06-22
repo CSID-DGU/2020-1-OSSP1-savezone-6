@@ -1,6 +1,7 @@
 # from keras.applications.resnet50 import ResNet50, preprocess_inputls
 import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 from keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input
 model = MobileNetV2(include_top=False, weights='imagenet',input_shape=(224,224,3))
 
@@ -21,8 +22,8 @@ print(model.summary())
 from keras.preprocessing.image import ImageDataGenerator
 train_datagen = ImageDataGenerator(
     rotation_range=35,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
+    width_shift_range=0.3,
+    height_shift_range=0.3,
     preprocessing_function=preprocess_input,
     fill_mode='constant'
 )
@@ -64,6 +65,10 @@ from keras import optimizers
 # TODO : 저장된 모델의 경로를 불러와서 모델을 그대로 사용가능.
 
 # model.load_weights('/home/opensw04/model.h5')
+model.load_weights('/home/opensw04/model.h5')
+
+#optimizer. Adam
+#learningrate =0.001
 model.compile(loss="categorical_crossentropy", optimizer=optimizers.Adam(lr=0.0001),metrics=["accuracy"])
 from keras.callbacks import ModelCheckpoint
 
@@ -73,7 +78,7 @@ checkpoint = ModelCheckpoint('/home/opensw1/keras/model.h5', save_best_only=True
 
 callback_list = [checkpoint]
 result = model.fit_generator(train_generator, steps_per_epoch= math.ceil(150/ 10),
-                             epochs=100,
+                             epochs=10000,
                              callbacks= callback_list,
                              validation_data=val_generator,
                              validation_steps= 20,
